@@ -1,0 +1,55 @@
+---
+title: "Code_testing"
+output: html_document
+---
+
+```{r}
+
+library(shiny)
+library(tidyverse)
+library(kableExtra)
+library(stringr)
+library(DT)
+library(dplyr)
+library(flextable)
+library(ggrepel)
+library(magrittr)
+```
+
+
+```{r}
+genusdata <- read_tsv("Data/genera.tsv")
+metadata <- read_tsv("Data/metadata.tsv")
+```
+```{r}
+genusdata
+```
+
+
+```{r}
+genus_col_rename <- genusdata %>%
+  rename_with(~ ifelse(
+    grepl("o__;f__;g__$", .x),
+    sub(".*?(c__[^;]*;o__;f__;g__)$", "\\1", .x),
+    ifelse(
+      grepl("f__;g__$", .x),
+      sub(".*?(o__[^;]*;f__;g__)$", "\\1", .x),
+      sub(".*?(f__[^;]*;g__.*)$", "\\1", .x)
+    )
+  ))
+
+# "~" <- applies function to each column name
+# ifelse function syntax <- ifelse(condition, value_if_true, value_if_false)
+
+
+```
+
+```{r}
+write.csv(genus_col_rename,"data/genus_clean.csv")
+```
+
+
+```{r}
+genus_clean <- read.csv("data/genus_clean")
+```
+
