@@ -27,6 +27,7 @@ genusdata
 
 
 ```{r}
+#change the names of the columns to be only specific parts (not whole taxonomy)
 genus_col_rename <- genusdata %>%
   rename_with(~ ifelse(
     grepl("o__;f__;g__$", .x),
@@ -45,11 +46,55 @@ genus_col_rename <- genusdata %>%
 ```
 
 ```{r}
+#new df
 write.csv(genus_col_rename,"data/genus_clean.csv")
 ```
 
 
 ```{r}
-genus_clean <- read.csv("data/genus_clean")
+#read in new df
+genus_clean <- read.csv("data/genus_clean", row.names = 1)
+```
+
+```{r}
+#merge the metadata and rel abundance data
+merged_df <- genus_clean %>%
+  left_join(metadata, by = "Sample")
+```
+
+```{r}
+summary(merged_df)
+```
+
+```{r}
+#pivot the table to make input into plots easier
+merged_transformed <- merged_df %>%
+  pivot_longer(
+    cols = contains("f__"),        # selects all genus columns
+    names_to = "genus",            # adds new column with genus names
+    values_to = "relative_abundance" # adds new column with the abundance values
+  )
+```
+
+```{r}
+#filter to narrow down the major abundances
+filtered_merged_trans <- merged_transformed %>% 
+  filter(relative_abundance > .1)
+```
+
+
+```{r}
+#test the plot to go into shiny app
+library(ggplot2)
+ 
+# Stacked + percent
+ggplot(filtered_merged_trans, aes(fill=genus, y=relative_abundance, x=diet)) + 
+    geom_bar(position="fill", stat="identity")
+```
+
+```{r}
+#check matching format
+head(genus_clean$Sample)
+head(metadata$Sample)
 ```
 
