@@ -8,8 +8,8 @@ ui <- fluidPage(
   h1("Infant Microbiome Relative Abundance Viewer"),
   
   p("Explore infant microbiome data based on diet and gender differences. Infants were fed different diets in the first year of life. Select from breastmilk, traditional formula, and supplemented formula to see how the microbiome composition changes. "),
-  
-  column(6,
+fluidRow(
+  column(4,
          p("Select Data Input"),
          selectizeInput( 
            "select", 
@@ -20,7 +20,7 @@ ui <- fluidPage(
            multiple = TRUE
          )),
   
-  column(6,
+  column(4,
          p("Filter for a specific age range"),
          numericInput( 
            "Age", 
@@ -30,12 +30,22 @@ ui <- fluidPage(
            max = 12
          )),
   
+    column(4, 
+           checkboxGroupInput(
+            inputId = "Gender",
+             label = "Select Options:",
+               choices = c("Male", "Female"),
+                inline = TRUE))
+),
   fluidRow(
-    column(12,
-           plotOutput("plot")),
-  ),
+    column(6,
+           plotOutput("plot1")),
+      column(6, conditionalPanel(
+       condition = "input.Gender.length == 2" ,
+       plotOutput("plot2")))
 
-  )
-  
+)
+
+)
   
 

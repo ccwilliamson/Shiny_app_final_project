@@ -23,11 +23,14 @@ server <- function(input, output){
   
   df <- reactiveValues(data = filtered_merged_trans)
   
-  observeEvent(c(input$Age, input$select), {
-    df$data <- filtered_merged_trans %>% filter(Age > input$Age, diet %in% input$select)
+  observeEvent(c(input$Age, input$select, input$Gender), {
+    
+    gender_choice <- if (length(input$Gender) == 0) c("Male","Female") else input$Gender
+    
+    df$data <- filtered_merged_trans %>% filter(Age > input$Age, diet %in% input$select, Gender %in% gender_choice)
     
     })
-  output$plot <- renderPlot({
+  output$plot1 <- renderPlot({
     req(input$select)
   x_var <- input$select[1]
   
@@ -37,6 +40,22 @@ server <- function(input, output){
   
   x_label <- names(choices)[choices == x_var] 
   
-  create_plot(df$data, x_var, x_label, input$Age)
-  }, height = 600, width = 800)
+  create_plot_age(df$data, x_var, x_label, input$Age)
+  }, height = 600)
+  
+  
+################
+  
+  output$plot2 <- renderPlot({
+    req(length(input$Gender) == 2)
+    req(input$select)
+    x_var <- input$select[1]
+    choices <- c("Breast milk",
+                 "Standard infant formula", 
+                 "Experimental infant formula")
+    
+    x_label <- names(choices)[choices == x_var] 
+    
+    create_plot_gender(df$data, x_var, x_label, input$Age, input$Gender)
+  }, height = 600)
 }
