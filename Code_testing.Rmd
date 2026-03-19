@@ -97,4 +97,7 @@ ggplot(filtered_merged_trans, aes(fill=genus, y=relative_abundance, x=diet)) +
 head(genus_clean$Sample)
 head(metadata$Sample)
 ```
+```{r}
+filtered_merged_trans$Age
+```
 

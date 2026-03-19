@@ -2,18 +2,19 @@
 ## Cecelia Williamson
 ## March 2026
 
-library(bslib)
+library(shinythemes)
 
 ui <- fluidPage(
+  theme = shinytheme("cerulean"),
+  
   h1("Infant Microbiome Relative Abundance Viewer"),
   
   p("Explore infant microbiome data based on diet and gender differences. Infants were fed different diets in the first year of life. Select from breastmilk, traditional formula, and supplemented formula to see how the microbiome composition changes. "),
 fluidRow(
   column(4,
-         p("Select Data Input"),
          selectizeInput( 
            "select", 
-           "Select options below:", 
+           "Select One or More Infant Diets:", 
            list("Breast milk",
                 "Standard infant formula", 
                 "Experimental infant formula"), 
@@ -21,19 +22,17 @@ fluidRow(
          )),
   
   column(4,
-         p("Filter for a specific age range"),
-         numericInput( 
-           "Age", 
-           "Infant Age (months)", 
-           value = 6, 
-           min = 0, 
-           max = 12
+         selectInput(
+           "Age",
+           "Select Infant Age (months)",
+           choices = c(2, 4, 6, 12),
+           selected = 6
          )),
   
     column(4, 
            checkboxGroupInput(
             inputId = "Gender",
-             label = "Select Options:",
+             label = "Select Male/Female or Both:",
                choices = c("Male", "Female"),
                 inline = TRUE))
 ),

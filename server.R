@@ -11,6 +11,7 @@ library(flextable)
 library(ggrepel)
 library(bslib)
 library(gt)
+library(shinythemes)
 
 source('functions.R')
 
@@ -27,7 +28,7 @@ server <- function(input, output){
     
     gender_choice <- if (length(input$Gender) == 0) c("Male","Female") else input$Gender
     
-    df$data <- filtered_merged_trans %>% filter(Age > input$Age, diet %in% input$select, Gender %in% gender_choice)
+    df$data <- filtered_merged_trans %>% filter(Age == as.numeric(input$Age), diet %in% input$select, Gender %in% gender_choice)
     
     })
   output$plot1 <- renderPlot({
@@ -41,7 +42,7 @@ server <- function(input, output){
   x_label <- names(choices)[choices == x_var] 
   
   create_plot_age(df$data, x_var, x_label, input$Age)
-  }, height = 600)
+  }, height = 700)
   
   
 ################
@@ -57,5 +58,5 @@ server <- function(input, output){
     x_label <- names(choices)[choices == x_var] 
     
     create_plot_gender(df$data, x_var, x_label, input$Age, input$Gender)
-  }, height = 600)
+  }, height = 700)
 }
